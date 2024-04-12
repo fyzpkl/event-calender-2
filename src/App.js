@@ -37,7 +37,7 @@ function App() {
                 extendedProps: {
                     inspectorName: insp.inspectorName || 'No Inspector',
                     facilityName: insp.facilityName || 'No Facility',
-                    facilityAddress: insp.facilityAddress || 'No Address'
+                    facilityAddress: insp.facilityAddress || { country: 'Unknown', countryCode: '' } // Ensure this is always an object
                 }
             };
         });
@@ -71,15 +71,17 @@ function App() {
 }
 
 // Customized display of event content
+// Customized display of event content
 function renderEventContent(eventInfo) {
   return (
-    <>
-      <b>{eventInfo.timeText}</b>
-      <i>{eventInfo.event.title}</i>
-      <p>{eventInfo.event.extendedProps.inspectorName}</p>
-      <p>{eventInfo.event.extendedProps.facilityName} - {eventInfo.event.extendedProps.facilityAddress}</p>
-    </>
+      <>
+          <b>{eventInfo.timeText}</b>
+          <i>{eventInfo.event.title}</i>
+          <p>{eventInfo.event.extendedProps.inspectorName}</p>
+          <p>{eventInfo.event.extendedProps.facilityName} - {eventInfo.event.extendedProps.facilityAddress}</p>
+      </>
   );
 }
+
 
 export default App;
