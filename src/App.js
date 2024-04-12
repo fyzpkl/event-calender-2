@@ -30,9 +30,12 @@ function App() {
 
     const inspections = Array.isArray(event.data.inspectionData) ? event.data.inspectionData : [event.data.inspectionData];
     const newEvents = inspections.map(insp => {
-      const startDate = moment(insp.Scheduled_Date_Time__c).toDate(); // Parse with moment-timezone
-      const endDate = moment(insp.Confirmed_Date_Time__c).toDate(); // Parse with moment-timezone
-
+      const startDate = moment(insp.Scheduled_Date_Time__c).toDate(); 
+      const endDate = moment(insp.Confirmed_Date_Time__c).toDate();
+    
+      console.log('Start Date:', startDate);
+      console.log('End Date:', endDate);
+    
       return {
         title: insp.Name || 'Unnamed Event',
         start: startDate,
@@ -44,7 +47,9 @@ function App() {
         }
       };
     });
-
+    
+    console.log('New Events:', newEvents); // Log the newEvents array
+    
     setEvents(newEvents);
   }
 
