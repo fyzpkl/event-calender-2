@@ -13,7 +13,7 @@ function App() {
 
   useEffect(() => {
     function receiveMessage(event) {
-      if (event.origin !== "https://expected-salesforce-origin.com") {
+      if (event.origin !== "https://enterprise-force-7539--partialsb.sandbox.lightning.force.com") {
         console.error('Unauthorized attempt to communicate from', event.origin);
         return;
       }
