@@ -28,16 +28,20 @@ function App() {
     }
 
     const inspections = Array.isArray(event.data.inspectionData) ? event.data.inspectionData : [event.data.inspectionData];
-    const newEvents = inspections.map(insp => ({
-      title: insp.Name || 'Unnamed Event',
-      start: new Date(insp.Scheduled_Date_Time__c),
-      end: new Date(insp.Confirmed_Date_Time__c),
-      extendedProps: {
-        inspectorName: insp.inspectorName || 'No Inspector',
-        facilityName: insp.facilityName || 'No Facility',
-        facilityAddress: insp.facilityAddress ? `${insp.facilityAddress.country}, ${insp.facilityAddress.countryCode}` : 'No Address'
-      }
-    }));
+    const newEvents = inspections.map(insp => {
+      console.log('Parsed Start Date:', new Date(insp.Scheduled_Date_Time__c));
+      console.log('Parsed End Date:', new Date(insp.Confirmed_Date_Time__c));
+      return {
+          title: insp.Name || 'Unnamed Event',
+          start: new Date(insp.Scheduled_Date_Time__c),
+          end: new Date(insp.Confirmed_Date_Time__c),
+          extendedProps: {
+              inspectorName: insp.inspectorName || 'No Inspector',
+              facilityName: insp.facilityName || 'No Facility',
+              facilityAddress: insp.facilityAddress ? `${insp.facilityAddress.country}, ${insp.facilityAddress.countryCode}` : 'No Address'
+          }
+      };
+  });
     setEvents(newEvents);
   }
 
@@ -51,18 +55,17 @@ function App() {
   }
   const customStyles = {
     content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      zIndex: 1000, // High z-index to ensure it's on top of other elements
-      padding: '20px',
-      overflow: 'auto', // Ensures scroll if content is too large
-      maxHeight: '90vh' // Limits the height to viewable area
+        top: '10%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, 0)',
+        width: '80%', // Set a max width
+        maxHeight: '80vh', // Ensure the modal does not go out of view vertically
+        overflow: 'auto'
     }
-  };
+};
 
   return (
     <div className="App">
