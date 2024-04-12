@@ -3,7 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import Modal from 'react-modal';  // Make sure this is correctly imported
+import Modal from 'react-modal';  
 import './App.css';
 
 function App() {
