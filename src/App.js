@@ -12,7 +12,6 @@ function App() {
 
   useEffect(() => {
     function receiveMessage(event) {
-      console.log('Received message from:', event.origin);
       if (event.origin !== "https://enterprise-force-7539--partialsb.sandbox.lightning.force.com") {
           console.error('Unauthorized attempt to communicate from', event.origin);
           return;
@@ -24,22 +23,21 @@ function App() {
       }
   
       const inspections = Array.isArray(event.data.inspectionData) ? event.data.inspectionData : [event.data.inspectionData];
-      console.log("Data received:", inspections);
       const newEvents = inspections.map(insp => {
           return {
               title: insp.Name || 'Unnamed Event',
-              start: new Date(insp.Scheduled_Date_Time__c || new Date()),
-              end: new Date(insp.Confirmed_Date_Time__c || new Date()),
+              start: new Date(insp.Scheduled_Date_Time__c),  // Ensure this is parsed correctly
+              end: new Date(insp.Confirmed_Date_Time__c),    // Ensure this is parsed correctly
               extendedProps: {
                   inspectorName: insp.inspectorName || 'No Inspector',
                   facilityName: insp.facilityName || 'No Facility',
-                  facilityAddress: insp.facilityAddress || { country: 'Unknown', countryCode: '' }  // Ensure this is always an object
+                  facilityAddress: insp.facilityAddress ? `${insp.facilityAddress.country}, ${insp.facilityAddress.countryCode}` : 'No Address'
               }
           };
       });
       setEvents(newEvents);
   }
-
+  
     window.addEventListener("message", receiveMessage, false);
 
     return () => window.removeEventListener("message", receiveMessage);
@@ -49,18 +47,19 @@ function App() {
   return (
     <div className="App">
       <div style={{padding:"3% 5%"}}>
-        <FullCalendar
+      <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
           events={events}
           headerToolbar={{
-            start: "today prev,next",
-            center: "title",
-            end: "dayGridMonth,timeGridWeek,timeGridDay"
+              start: "today prev,next",
+              center: "title",
+              end: "dayGridMonth,timeGridWeek,timeGridDay"
           }}
-          eventContent={renderEventContent} // Optionally render custom event content
+          eventContent={renderEventContent} // Custom event content for displaying additional details
           height="90vh"
-        />
+      />
+
       </div>
     </div>
   );
@@ -69,18 +68,15 @@ function App() {
 // Customized display of event content
 // Customized display of event content
 function renderEventContent(eventInfo) {
-  const facilityAddress = eventInfo.event.extendedProps.facilityAddress;
-  // Format the facilityAddress object into a string for display
-  const addressString = facilityAddress ? `${facilityAddress.country}, ${facilityAddress.countryCode}` : 'No Address Provided';
 
   return (
-      <>
-          <b>{eventInfo.timeText}</b>
-          <i>{eventInfo.event.title}</i>
-          <p>{eventInfo.event.extendedProps.inspectorName || 'No Inspector'}</p>
-          <p>{eventInfo.event.extendedProps.facilityName} - {addressString}</p>
-      </>
-  );
+    <>
+        <b>{eventInfo.timeText}</b>
+        <i>{eventInfo.event.title}</i>
+        <div>{eventInfo.event.extendedProps.inspectorName}</div>
+        <div>{eventInfo.event.extendedProps.facilityName} - {eventInfo.event.extendedProps.facilityAddress}</div>
+    </>
+);
 }
 
 
