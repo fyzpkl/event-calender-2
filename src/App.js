@@ -49,6 +49,21 @@ function App() {
   function closeModal() {
     setModalIsOpen(false);
   }
+  const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 1000, // High z-index to ensure it's on top of other elements
+      padding: '20px',
+      overflow: 'auto', // Ensures scroll if content is too large
+      maxHeight: '90vh' // Limits the height to viewable area
+    }
+  };
+
   return (
     <div className="App">
       <div style={{ padding: "3% 5%" }}>
@@ -69,24 +84,15 @@ function App() {
           <Modal
             isOpen={modalIsOpen}
             onRequestClose={closeModal}
+            style={customStyles}  // Using customStyles for better modal presentation
             contentLabel="Event Details"
-            style={{
-              content: {
-                top: '50%',
-                left: '50%',
-                right: 'auto',
-                bottom: 'auto',
-                marginRight: '-50%',
-                transform: 'translate(-50%, -50%)'
-              }
-            }}
           >
             <h2>{selectedEvent.title}</h2>
             <div>Date: {selectedEvent.start.toDateString()}</div>
             <div>Inspector: {selectedEvent.extendedProps.inspectorName}</div>
             <div>Facility: {selectedEvent.extendedProps.facilityName}</div>
             <div>Address: {selectedEvent.extendedProps.facilityAddress}</div>
-            <button onClick={closeModal}>Close</button>
+            <button onClick={closeModal} style={{ marginTop: '20px' }}>Close</button>
           </Modal>
         )}
       </div>
@@ -99,8 +105,6 @@ function renderEventContent(eventInfo) {
     <>
       <b>{eventInfo.timeText}</b>
       <i>{eventInfo.event.title}</i>
-      <div>{eventInfo.event.extendedProps.inspectorName}</div>
-      <div>{eventInfo.event.extendedProps.facilityName} - {eventInfo.event.extendedProps.facilityAddress}</div>
     </>
   );
 }
