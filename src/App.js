@@ -43,29 +43,60 @@ function App() {
     return () => window.removeEventListener("message", receiveMessage);
 }, []);
 
+  function handleEventClick(clickInfo) {
+    setSelectedEvent(clickInfo.event);
+    setModalIsOpen(true);
+  }
+
+  function closeModal() {
+    setModalIsOpen(false);
+  }
 
   return (
     <div className="App">
-      <div style={{padding:"3% 5%"}}>
-      <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
-          events={events}
-          headerToolbar={{
-              start: "today prev,next",
-              center: "title",
-              end: "dayGridMonth,timeGridWeek,timeGridDay"
-          }}
-          eventContent={renderEventContent} // Custom event content for displaying additional details
-          height="90vh"
-      />
-
-      </div>
+        <div style={{ padding: "3% 5%" }}>
+            <FullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                initialView="dayGridMonth"
+                events={events}
+                eventClick={handleEventClick}  // Set up eventClick to open the modal
+                headerToolbar={{
+                    start: "today prev,next",
+                    center: "title",
+                    end: "dayGridMonth,timeGridWeek,timeGridDay"
+                }}
+                eventContent={renderEventContent}
+                height="90vh"
+            />
+        </div>
+        {selectedEvent && (
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="Event Details"
+                style={{
+                    content: {
+                        top: '50%',
+                        left: '50%',
+                        right: 'auto',
+                        bottom: 'auto',
+                        marginRight: '-50%',
+                        transform: 'translate(-50%, -50%)'
+                    }
+                }}
+            >
+                <h2>{selectedEvent.title}</h2>
+                <div>Date: {selectedEvent.start.toDateString()}</div>
+                <div>Inspector: {selectedEvent.extendedProps.inspectorName}</div>
+                <div>Facility: {selectedEvent.extendedProps.facilityName}</div>
+                <div>Address: {selectedEvent.extendedProps.facilityAddress}</div>
+                <button onClick={closeModal}>Close</button>
+            </Modal>
+        )}
     </div>
-  );
+);
 }
 
-// Customized display of event content
 // Customized display of event content
 function renderEventContent(eventInfo) {
 
