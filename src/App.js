@@ -12,39 +12,43 @@ function App() {
 
   useEffect(() => {
     function receiveMessage(event) {
-      console.log('Received message from:', event.origin);
-      // Update the expected origin as per your Salesforce deployment
-      if (event.origin !== "https://enterprise-force-7539--partialsb.sandbox.lightning.force.com") {
-        console.error('Unauthorized attempt to communicate from', event.origin);
-        return;
-      }
+        console.log('Received message from:', event.origin);
+        // Update the expected origin as per your Salesforce deployment
+        if (event.origin !== "https://enterprise-force-7539--partialsb.sandbox.lightning.force.com") {
+            console.error('Unauthorized attempt to communicate from', event.origin);
+            return;
+        }
 
-      if (!event.data || !Array.isArray(event.data)) {
-        console.error('Invalid data received', event.data);
-        return;
-      }
+        // Check if the data includes the inspectionData property
+        if (!event.data || !event.data.inspectionData) {
+            console.error('Invalid data received', event.data);
+            return;
+        }
 
-      console.log("Data received:", event.data);
-      // Ensure the data structure is as expected
-      const newEvents = event.data.map(insp => {
-        return {
-          title: insp.Name || 'Unnamed Event',
-          start: new Date(insp.Scheduled_Date_Time__c || new Date()),
-          end: new Date(insp.Confirmed_Date_Time__c || new Date()),
-          extendedProps: {
-            inspectorName: insp.inspectorName || 'No Inspector',
-            facilityName: insp.facilityName || 'No Facility',
-            facilityAddress: insp.facilityAddress || 'No Address'
-          }
-        };
-      });
-      setEvents(newEvents);
+        // Assuming inspectionData is an array; if it's not, you can wrap it in an array as follows:
+        const inspections = Array.isArray(event.data.inspectionData) ? event.data.inspectionData : [event.data.inspectionData];
+
+        console.log("Data received:", inspections);
+        const newEvents = inspections.map(insp => {
+            return {
+                title: insp.Name || 'Unnamed Event',
+                start: new Date(insp.Scheduled_Date_Time__c || new Date()),
+                end: new Date(insp.Confirmed_Date_Time__c || new Date()),
+                extendedProps: {
+                    inspectorName: insp.inspectorName || 'No Inspector',
+                    facilityName: insp.facilityName || 'No Facility',
+                    facilityAddress: insp.facilityAddress || 'No Address'
+                }
+            };
+        });
+        setEvents(newEvents);
     }
 
     window.addEventListener("message", receiveMessage, false);
 
     return () => window.removeEventListener("message", receiveMessage);
-  }, []);
+}, []);
+
 
   return (
     <div className="App">
