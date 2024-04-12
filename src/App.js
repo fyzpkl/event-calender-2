@@ -6,27 +6,35 @@ import interactionPlugin from "@fullcalendar/interaction";
 import './App.css';
 
 function App() {
-  // Initialize the events state with an example event
   const [events, setEvents] = useState([
-    { title: 'Meeting', start: new Date() }
+    { title: 'Initial Meeting', start: new Date() }
   ]);
 
   useEffect(() => {
     function receiveMessage(event) {
+      console.log('Received message from:', event.origin);
+      // Update the expected origin as per your Salesforce deployment
       if (event.origin !== "https://enterprise-force-7539--partialsb.sandbox.lightning.force.com") {
         console.error('Unauthorized attempt to communicate from', event.origin);
         return;
       }
-      // Update the events state with the new events data received
+
+      if (!event.data || !Array.isArray(event.data)) {
+        console.error('Invalid data received', event.data);
+        return;
+      }
+
+      console.log("Data received:", event.data);
+      // Ensure the data structure is as expected
       const newEvents = event.data.map(insp => {
         return {
-          title: insp.Name,
-          start: new Date(insp.Scheduled_Date_Time__c),
-          end: new Date(insp.Confirmed_Date_Time__c),
+          title: insp.Name || 'Unnamed Event',
+          start: new Date(insp.Scheduled_Date_Time__c || new Date()),
+          end: new Date(insp.Confirmed_Date_Time__c || new Date()),
           extendedProps: {
-            inspectorName: insp.inspectorName,
-            facilityName: insp.facilityName,
-            facilityAddress: insp.facilityAddress
+            inspectorName: insp.inspectorName || 'No Inspector',
+            facilityName: insp.facilityName || 'No Facility',
+            facilityAddress: insp.facilityAddress || 'No Address'
           }
         };
       });
@@ -58,7 +66,7 @@ function App() {
   );
 }
 
-// Optional: Customize how events are displayed
+// Customized display of event content
 function renderEventContent(eventInfo) {
   return (
     <>
