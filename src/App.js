@@ -21,29 +21,41 @@ function App() {
       console.error('Unauthorized attempt to communicate from', event.origin);
       return;
     }
-
+  
     if (!event.data || !event.data.inspectionData) {
       console.error('Invalid data received', event.data);
       return;
     }
-
+  
     const inspections = Array.isArray(event.data.inspectionData) ? event.data.inspectionData : [event.data.inspectionData];
     const newEvents = inspections.map(insp => {
-      console.log('Parsed Start Date:', new Date(insp.Scheduled_Date_Time__c));
-      console.log('Parsed End Date:', new Date(insp.Confirmed_Date_Time__c));
+      // Parse date strings with time zone information
+      const startDate = new Date(insp.Scheduled_Date_Time__c);
+      const endDate = new Date(insp.Confirmed_Date_Time__c);
+  
+      // Format dates with time zone information
+      const startDateTimeString = startDate.toLocaleString('en-US', { timeZone: 'America/New_York' }); // Adjust timezone as needed
+      const endDateTimeString = endDate.toLocaleString('en-US', { timeZone: 'America/New_York' }); // Adjust timezone as needed
+  
+      // Create Date objects with time zone information
+      const startDateTime = new Date(startDateTimeString);
+      const endDateTime = new Date(endDateTimeString);
+  
       return {
-          title: insp.Name || 'Unnamed Event',
-          start: new Date(insp.Scheduled_Date_Time__c),
-          end: new Date(insp.Confirmed_Date_Time__c),
-          extendedProps: {
-              inspectorName: insp.inspectorName || 'No Inspector',
-              facilityName: insp.facilityName || 'No Facility',
-              facilityAddress: insp.facilityAddress ? `${insp.facilityAddress.country}, ${insp.facilityAddress.countryCode}` : 'No Address'
-          }
+        title: insp.Name || 'Unnamed Event',
+        start: startDateTime,
+        end: endDateTime,
+        extendedProps: {
+          inspectorName: insp.inspectorName || 'No Inspector',
+          facilityName: insp.facilityName || 'No Facility',
+          facilityAddress: insp.facilityAddress ? `${insp.facilityAddress.country}, ${insp.facilityAddress.countryCode}` : 'No Address'
+        }
       };
-  });
+    });
+  
     setEvents(newEvents);
   }
+  
 
   function handleEventClick(clickInfo) {
     setSelectedEvent(clickInfo.event);
