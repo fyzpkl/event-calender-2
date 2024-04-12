@@ -52,7 +52,7 @@ function App() {
     
     setEvents(newEvents);
   }
-
+  console.log('Events:', events);
   function handleEventClick(clickInfo) {
     setSelectedEvent(clickInfo.event);
     setModalIsOpen(true);
