@@ -33,9 +33,6 @@ function App() {
       const startDate = moment(insp.Scheduled_Date_Time__c).toDate();
       const endDate = moment(insp.Confirmed_Date_Time__c).toDate();
   
-      console.log('Start Date:', startDate);
-      console.log('End Date:', endDate);
-  
       return {
         title: insp.Name || 'Unnamed Event',
         start: startDate,
@@ -48,12 +45,10 @@ function App() {
       };
     });
   
-    console.log('New Events:', newEvents); // Log the newEvents array
-  
-    // Call setEvents with the entire newEvents array
-    setEvents(newEvents);
+    // Append new events to the existing events
+    setEvents(prevEvents => [...prevEvents, ...newEvents]);
   }
-  console.log('Events:', events);
+
   function handleEventClick(clickInfo) {
     setSelectedEvent(clickInfo.event);
     setModalIsOpen(true);
