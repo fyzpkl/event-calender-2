@@ -93,12 +93,13 @@ function App() {
           initialView="dayGridMonth"
           events={events}
           eventClick={handleEventClick}
+          eventContent={renderEventContent}
           headerToolbar={{
             start: "today prev,next",
             center: "title",
             end: "dayGridMonth,timeGridWeek,timeGridDay"
           }}
-          eventContent={renderEventContent}
+          
           height="90vh"
         />
         {selectedEvent && (
