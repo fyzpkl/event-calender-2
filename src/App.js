@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import Modal from 'react-modal';  
-import moment from 'moment-timezone'; // Import moment-timezone
+import moment from 'moment-timezone';
 import './App.css';
 
 function App() {
@@ -28,24 +28,22 @@ function App() {
       return;
     }
   
-    const inspections = Array.isArray(event.data.inspectionData) ? event.data.inspectionData : [event.data.inspectionData];
-    const newEvents = inspections.map(insp => {
-      const startDate = moment(insp.Scheduled_Date_Time__c).toDate();
-      const endDate = moment(insp.Confirmed_Date_Time__c).toDate();
+    const newEvents = (Array.isArray(event.data.inspectionData) ? event.data.inspectionData : [event.data.inspectionData])
+      .map(insp => {
+        const startDate = moment(insp.Scheduled_Date_Time__c).toDate();
+        const endDate = moment(insp.Confirmed_Date_Time__c).toDate();
+        return {
+          title: insp.Name || 'Unnamed Event',
+          start: startDate,
+          end: endDate,
+          extendedProps: {
+            inspectorName: insp.inspectorName || 'No Inspector',
+            facilityName: insp.facilityName || 'No Facility',
+            facilityAddress: insp.facilityAddress ? `${insp.facilityAddress.country}, ${insp.facilityAddress.countryCode}` : 'No Address'
+          }
+        };
+      });
   
-      return {
-        title: insp.Name || 'Unnamed Event',
-        start: startDate,
-        end: endDate,
-        extendedProps: {
-          inspectorName: insp.inspectorName || 'No Inspector',
-          facilityName: insp.facilityName || 'No Facility',
-          facilityAddress: insp.facilityAddress ? `${insp.facilityAddress.country}, ${insp.facilityAddress.countryCode}` : 'No Address'
-        }
-      };
-    });
-  
-    // Append new events to the existing events
     setEvents(prevEvents => [...prevEvents, ...newEvents]);
   }
 
@@ -57,11 +55,11 @@ function App() {
   function closeModal() {
     setModalIsOpen(false);
   }
-  
+
   const customStyles = {
     overlay: {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      zIndex: 1000  // Ensuring the overlay is above most other elements
+      zIndex: 1000
     },
     content: {
       position: 'absolute',
@@ -71,12 +69,21 @@ function App() {
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, 0)',
-      width: '80%', // Set a max width
-      maxHeight: '80vh', // Ensures the modal does not go out of view vertically
+      width: '80%',
+      maxHeight: '80vh',
       overflow: 'auto',
-      zIndex: 1001  // Content must be above the overlay
+      zIndex: 1001
     }
   };
+
+  function renderEventContent(eventInfo) {
+    return (
+      <>
+        <b>{eventInfo.timeText}</b>
+        <i>{eventInfo.event.title}</i>
+      </>
+    );
+  }
 
   return (
     <div className="App">
@@ -98,9 +105,9 @@ function App() {
           <Modal
             isOpen={modalIsOpen}
             onRequestClose={closeModal}
-            style={customStyles} // Using custom styles for better modal presentation
+            style={customStyles}
             contentLabel="Event Details"
-            ariaHideApp={false}  // Sometimes needed depending on your app structure
+            ariaHideApp={false}
           >
             <h2>{selectedEvent.title}</h2>
             <div>Date: {selectedEvent.start.toDateString()}</div>
@@ -112,15 +119,6 @@ function App() {
         )}
       </div>
     </div>
-  );
-}
-
-function renderEventContent(eventInfo) {
-  return (
-    <>
-      <b>{eventInfo.timeText}</b>
-      <i>{eventInfo.event.title}</i>
-    </>
   );
 }
 
