@@ -77,14 +77,14 @@ function App() {
   };
 
   function renderEventContent(eventInfo) {
+    console.log("Event info:", eventInfo); // Logs the event info to see what data is available
     return (
-      <>
-        <b>{eventInfo.timeText}</b>
-        <i>{eventInfo.event.title}</i>
-      </>
+      <div style={{ padding: '5px', backgroundColor: '#fff', color: '#000' }}> 
+        <strong>{eventInfo.timeText}</strong>
+        <div>{eventInfo.event.title}</div>
+      </div>
     );
   }
-
   return (
     <div className="App">
       <div style={{ padding: "3% 5%" }}>
