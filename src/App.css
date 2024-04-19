@@ -252,3 +252,27 @@ body {
     --smart-scheduler-event-focus: rgba(var(--smart-scheduler-event-background-rgb), .9);
     --smart-scheduler-event-hover: rgba(var(--smart-scheduler-event-background-rgb), .8);
 }
+/* Background color for different calendar views */
+.fc .fc-daygrid-day-frame,
+.fc .fc-timegrid-slot,
+.fc .fc-list-table {
+    background-color: white;
+}
+
+/* Styles for calendar events to fit and look better */
+.fc-event {
+    padding: 4px 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Ensuring the primary container has a white background */
+#primaryContainer {
+    background-color: white;
+}
