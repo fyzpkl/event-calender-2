@@ -59,7 +59,12 @@ function App() {
   }
   
   const customStyles = {
+    overlay: {
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      zIndex: 1000  // Ensuring the overlay is above most other elements
+    },
     content: {
+      position: 'absolute',
       top: '10%',
       left: '50%',
       right: 'auto',
@@ -67,8 +72,9 @@ function App() {
       marginRight: '-50%',
       transform: 'translate(-50%, 0)',
       width: '80%', // Set a max width
-      maxHeight: '80vh', // Ensure the modal does not go out of view vertically
-      overflow: 'auto'
+      maxHeight: '80vh', // Ensures the modal does not go out of view vertically
+      overflow: 'auto',
+      zIndex: 1001  // Content must be above the overlay
     }
   };
 
@@ -92,8 +98,9 @@ function App() {
           <Modal
             isOpen={modalIsOpen}
             onRequestClose={closeModal}
-            style={customStyles}  // Using customStyles for better modal presentation
+            style={customStyles} // Using custom styles for better modal presentation
             contentLabel="Event Details"
+            ariaHideApp={false}  // Sometimes needed depending on your app structure
           >
             <h2>{selectedEvent.title}</h2>
             <div>Date: {selectedEvent.start.toDateString()}</div>
